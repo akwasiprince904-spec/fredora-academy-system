@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 // Ensure axios points to backend API during development
-const API_BASE_URL = (import.meta?.env?.VITE_API_URL) || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 axios.defaults.baseURL = API_BASE_URL;
 
 // Set axios timeout and performance settings
@@ -226,7 +226,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-
-
-
