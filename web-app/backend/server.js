@@ -1,10 +1,8 @@
-// Temporarily disabled rate limiting - 2025-08-21
+// Simplified server.js - 2025-08-21
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-const slowDown = require('express-slow-down');
 const path = require('path');
 require('dotenv').config();
 
@@ -27,40 +25,15 @@ const { logger } = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Trust proxy for rate limiting (FIXED)
+// Trust proxy for production
 app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
+  contentSecurityPolicy: false // Disable CSP for now
 }));
 
-// Rate limiting - TEMPORARILY DISABLED
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // allow 50 requests per 15 minutes, then...
-  delayMs: 500 // begin adding 500ms of delay per request above 50
-});
-
-// TEMPORARILY DISABLED - app.use(limiter);
-// TEMPORARILY DISABLED - app.use(speedLimiter);
-
-// CORS configuration - Updated to allow Vercel frontend
+// CORS configuration
 app.use(cors({
   origin: [
     'http://localhost:3000',
