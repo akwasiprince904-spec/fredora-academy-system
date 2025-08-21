@@ -471,6 +471,11 @@ const Login = () => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     
+    // Add these debug logs
+    console.log('   Login attempt with data:', data);
+    console.log('🔍 API_BASE_URL:', import.meta.env.VITE_API_URL);
+    console.log('🔍 Full API URL:', `${import.meta.env.VITE_API_URL}/api/auth/login`);
+    
     try {
       const result = await login(data);
       
@@ -624,7 +629,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
