@@ -80,6 +80,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Fredora Academy Backend API is running',
+    version: '1.0.0'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -117,7 +126,7 @@ app.use(errorHandler);
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   logger.info(`🚀 Fredora Academy API server running on port ${PORT}`);
-  logger.info(`📊 Health check: http://localhost:${PORT}/health`);
+  logger.info(`   Health check: http://localhost:${PORT}/health`);
   logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
@@ -133,5 +142,3 @@ process.on('SIGINT', () => {
 });
 
 module.exports = app;
-
-
