@@ -2,11 +2,11 @@ const knex = require('knex');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-// Database configuration
+// Database configuration - FIXED PATH
 const db = knex({
   client: 'sqlite3',
   connection: {
-    filename: path.join(__dirname, 'database/fredora_academy.db')
+    filename: path.join(__dirname, 'database.sqlite')
   },
   useNullAsDefault: true
 });
@@ -84,7 +84,7 @@ async function checkAdminUser() {
 
     // Check if there are any users with admin role
     const adminUsers = await db('users').where('role', 'admin');
-    console.log(`\n📊 Found ${adminUsers.length} admin users:`);
+    console.log(`\n   Found ${adminUsers.length} admin users:`);
     adminUsers.forEach(user => {
       console.log(`   - ${user.username} (${user.email})`);
     });
