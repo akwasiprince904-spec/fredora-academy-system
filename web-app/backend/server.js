@@ -56,9 +56,14 @@ const speedLimiter = slowDown({
 app.use(limiter);
 app.use(speedLimiter);
 
-// CORS configuration
+// CORS configuration - Updated to allow Vercel frontend
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'https://fredora-academy-system-frontend.vercel.app',
+    'https://fredora-academy-system-frontend-mrbkna6lk.vercel.app',
+    'https://fredora-academy-system-fr-git-58640d-generals-projects-051515bd.vercel.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
