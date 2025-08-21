@@ -1,4 +1,4 @@
-// Updated with trust proxy fix - 2025-08-21
+// Temporarily disabled rate limiting - 2025-08-21
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -42,7 +42,7 @@ app.use(helmet({
   },
 }));
 
-// Rate limiting
+// Rate limiting - TEMPORARILY DISABLED
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -57,8 +57,8 @@ const speedLimiter = slowDown({
   delayMs: 500 // begin adding 500ms of delay per request above 50
 });
 
-app.use(limiter);
-app.use(speedLimiter);
+// TEMPORARILY DISABLED - app.use(limiter);
+// TEMPORARILY DISABLED - app.use(speedLimiter);
 
 // CORS configuration - Updated to allow Vercel frontend
 app.use(cors({
