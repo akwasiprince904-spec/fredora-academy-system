@@ -1,4 +1,4 @@
-// Simplified server.js - 2025-08-21
+// Simplified server.js - 2025-08-21 - FORCE REDEPLOY
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -79,6 +79,26 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
+});
+
+// Debug endpoint to test database connection
+app.get('/debug-db', async (req, res) => {
+  try {
+    const db = require('./config/database');
+    const result = await db.raw('SELECT NOW() as current_time');
+    res.json({
+      success: true,
+      message: 'Database connection working',
+      timestamp: result.rows[0].current_time,
+      dbClient: db.client.config.client
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+      error: error.message
+    });
+  }
 });
 
 // API routes

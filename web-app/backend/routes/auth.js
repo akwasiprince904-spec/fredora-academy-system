@@ -89,9 +89,15 @@ router.post('/login', [
     });
   } catch (error) {
     logger.error('Login error:', error);
+    logger.error('Login error details:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
     res.status(500).json({
       success: false,
-      message: 'Server error during login'
+      message: 'Server error during login',
+      error: error.message
     });
   }
 });
