@@ -34,13 +34,17 @@ app.use(helmet({
 }));
 
 // CORS configuration
+const corsOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',') 
+  : [
+      'http://localhost:3000',
+      'https://fredora-academy-system-frontend.vercel.app',
+      'https://fredora-academy-system-frontend-mrbkna6lk.vercel.app',
+      'https://fredora-academy-system-fr-git-58640d-generals-projects-051515bd.vercel.app'
+    ];
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://fredora-academy-system-frontend.vercel.app',
-    'https://fredora-academy-system-frontend-mrbkna6lk.vercel.app',
-    'https://fredora-academy-system-fr-git-58640d-generals-projects-051515bd.vercel.app'
-  ],
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
