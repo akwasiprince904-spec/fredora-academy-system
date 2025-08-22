@@ -1,4 +1,4 @@
-// Direct production database configuration
+// Direct production database configuration - FIXED
 const knex = require('knex');
 
 const db = knex({
