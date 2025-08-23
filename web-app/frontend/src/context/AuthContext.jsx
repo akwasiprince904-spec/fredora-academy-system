@@ -41,9 +41,10 @@ export const AuthProvider = ({ children }) => {
     const verifyToken = async () => {
       if (token) {
         try {
-          // Add timeout to prevent hanging
+          // Add timeout to prevent hanging and increase to 10s in production
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+          const timeoutMs = import.meta.env.VITE_NODE_ENV === 'production' ? 10000 : 5000;
+          const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
           
           const response = await axios.get('/api/auth/verify', {
             signal: controller.signal
@@ -54,14 +55,25 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Token verification failed:', error);
-          if (error.name === 'AbortError') {
+          const status = error.response?.status;
+          const isNetwork = error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK';
+          const isAborted = error.name === 'AbortError';
+
+          if (isAborted) {
             console.log('Token verification timed out');
-          } else if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+          } else if (isNetwork) {
             console.log('Cannot connect to server - network error');
-          } else if (error.response?.status === 500) {
-            console.log('Server error - database connection issue');
+          } else if (status >= 500) {
+            console.log('Server error - possibly database connection issue');
           }
-          logout();
+
+          // Only logout on explicit auth failures
+          if (status === 401 || status === 403) {
+            logout();
+          } else {
+            // Keep user logged in locally; backend might be temporarily unavailable
+            setIsAuthenticated(Boolean(token));
+          }
         }
       }
       setLoading(false);
