@@ -2,8 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-// Ensure axios points to backend API during development
+// Ensure axios points to backend API
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+console.log('API Base URL:', API_BASE_URL); // Debug log
 axios.defaults.baseURL = API_BASE_URL;
 
 // Set axios timeout and performance settings
@@ -55,6 +56,10 @@ export const AuthProvider = ({ children }) => {
           console.error('Token verification failed:', error);
           if (error.name === 'AbortError') {
             console.log('Token verification timed out');
+          } else if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+            console.log('Cannot connect to server - network error');
+          } else if (error.response?.status === 500) {
+            console.log('Server error - database connection issue');
           }
           logout();
         }
@@ -68,7 +73,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setLoading(true);
+      console.log('🔐 Attempting login to:', axios.defaults.baseURL);
+      console.log('📤 Login credentials:', { username: credentials.username, password: '***' });
+      
       const response = await axios.post('/api/auth/login', credentials);
+      console.log('✅ Login response:', response.data);
       
       const { token: newToken, user: userData } = response.data;
       
@@ -84,7 +93,14 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user: userData };
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('❌ Login failed:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config
+      });
+      
       let message = 'Login failed. Please try again.';
       
       if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
