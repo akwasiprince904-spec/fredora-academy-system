@@ -47,7 +47,10 @@ export const AuthProvider = ({ children }) => {
           const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
           
           const response = await axios.get('/api/auth/verify', {
-            signal: controller.signal
+            signal: controller.signal,
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           });
           
           clearTimeout(timeoutId);
@@ -65,15 +68,12 @@ export const AuthProvider = ({ children }) => {
             console.log('Cannot connect to server - network error');
           } else if (status >= 500) {
             console.log('Server error - possibly database connection issue');
+          } else if (status === 401 || status === 403) {
+            console.log('Auth failed on verify; keeping local session to avoid auto-logout.');
           }
 
-          // Only logout on explicit auth failures
-          if (status === 401 || status === 403) {
-            logout();
-          } else {
-            // Keep user logged in locally; backend might be temporarily unavailable
-            setIsAuthenticated(Boolean(token));
-          }
+          // Never auto-logout here; keep local session and allow app to function
+          setIsAuthenticated(Boolean(token));
         }
       }
       setLoading(false);
