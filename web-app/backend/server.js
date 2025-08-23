@@ -40,7 +40,8 @@ const corsOrigins = process.env.CORS_ORIGINS
       'http://localhost:3000',
       'https://fredora-academy-system-frontend.vercel.app',
       'https://fredora-academy-system-frontend-mrbkna6lk.vercel.app',
-      'https://fredora-academy-system-fr-git-58640d-generals-projects-051515bd.vercel.app'
+      'https://fredora-academy-system-fr-git-58640d-generals-projects-051515bd.vercel.app',
+      'https://fredora-academy-system-frontend-5jv5y7fmv.vercel.app'
     ];
 
 app.use(cors({
