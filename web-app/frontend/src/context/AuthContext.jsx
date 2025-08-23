@@ -3,7 +3,11 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 // Ensure axios points to backend API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.endsWith('vercel.app')
+    ? 'https://fredora-academy-system.onrender.com'
+    : 'http://localhost:5000');
 console.log('API Base URL:', API_BASE_URL); // Debug log
 axios.defaults.baseURL = API_BASE_URL;
 
